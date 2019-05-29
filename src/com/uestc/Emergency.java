@@ -64,21 +64,15 @@ public class Emergency {
         int Edgeweight;
         int n1;
         int n2;
-        boolean isRelax;
+       // boolean isRelax;
 
-        public void setRelax(boolean isrelax) {
-            isRelax = isrelax;
-        }
 
-        public boolean isRelax() {
-            return isRelax;
-        }
 
         Edge(int s,int t,int w){
             this.n1=s;
             this.n2=t;
             this.Edgeweight= w;
-            isRelax = false;
+
         }
         int theOther(int temp){
             if (temp == n1) {
@@ -129,8 +123,8 @@ public class Emergency {
             weight= scanner.nextInt();
             my.setEdge(start,to,weight);
         }
-        //数据读入完成
-        //如果 c1->c1
+//        数据读入完成
+//        如果 c1->c1
         if (c1 == c2) {
             System.out.print(1+" "+my.getRescueTrams(c2));
         }
@@ -149,14 +143,21 @@ public class Emergency {
 
                 }
                 for (Edge e:my.adj(num)) {
-                    if (!e.isRelax()){
                         my.relax(num,e);
-                        e.setRelax(true);
-                    }
-
                 }
             }
+
+            //Bell-ford O(n^2)
+//            for (int i = 0; i <n ; i++) {
+//                for (int j=0;j<n;j++){
+//                    for (Edge e:my.adj(j)) {
+//
+//                        my.relax(j,e);
+//                    }
+//                }
+//            }
             System.out.print(my.getRoads(c2)+" "+my.getRescueTrams(c2));
+
 
 
         }
