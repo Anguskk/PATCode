@@ -12,6 +12,7 @@ public class Emergency {
     private int[] distTo;
     private int[] rescueTeams;
     private int[] roads;
+    private int[] pathTo;
 
     private ArrayList<Edge>[] adjedges;
     //static int cnt=0;
@@ -23,8 +24,13 @@ public class Emergency {
         rescueTeams =new int[V];
         roads = new int[V];
         queue = new LinkedList<Integer>();
-
         Onqueue = new boolean[V];
+        //pathTo 记录到这个点的路径上前一个点
+        pathTo = new int[V];
+        for (int i = 0; i <V ; i++) {
+            pathTo[i] = -1;
+        }
+        pathTo[s] = s;
         for (int i = 0; i <V ; i++) {
             roads[i] = 0;
         }
@@ -91,16 +97,26 @@ public class Emergency {
     public void relax(int v1,Edge e){
         if (distTo[e.theOther(v1)] > distTo[v1]+e.Edgeweight) {
             distTo[e.theOther(v1)] = distTo[v1]+e.Edgeweight;
+            pathTo[e.theOther(v1)] = v1;
             if (Onqueue[e.theOther(v1)] == false) {
-                queue.offer(e.theOther(e.theOther(v1)));
+                queue.offer(e.theOther(v1));
                 Onqueue[e.theOther(v1)] = true;
             }
             roads[e.theOther(v1)] = roads [v1];
             rescueTeams[e.theOther(v1)] = rescueTeams[v1]+vNodes[e.theOther(v1)].nodeWeight;
         }
         else if (distTo[e.theOther(v1)] == distTo[v1]+e.Edgeweight){
-            roads[e.theOther(v1)] += roads[v1];
+            if (Onqueue[e.theOther(v1)] == false) {
+                queue.offer(e.theOther(v1));
+                Onqueue[e.theOther(v1)] = true;
+            }
+            
             rescueTeams[e.theOther(v1)] = Math.max(rescueTeams[v1]+vNodes[e.theOther(v1)].nodeWeight,rescueTeams[e.theOther(v1)]);
+            if (pathTo[e.theOther(v1)] == v1) {
+                roads[e.theOther(v1)] = roads[v1];
+            }else{
+                roads[e.theOther(v1)] += roads[v1];
+            }
 
         }
 
@@ -153,15 +169,6 @@ public class Emergency {
                 }
             }
 
-            //Bell-ford O(n^2)
-//            for (int i = 0; i <n ; i++) {
-//                for (int j=0;j<n;j++){
-//                    for (Edge e:my.adj(j)) {
-//
-//                        my.relax(j,e);
-//                    }
-//                }
-//            }
             System.out.print(my.getRoads(c2)+" "+my.getRescueTrams(c2));
 
 
