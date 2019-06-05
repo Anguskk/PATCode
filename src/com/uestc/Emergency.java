@@ -12,8 +12,9 @@ public class Emergency {
     private int[] distTo;
     private int[] rescueTeams;
     private int[] roads;
-    private int[] pathTo;
-
+    //Arraylist建一个bag存放所有前继点
+    //private int[] pathTo;
+    private ArrayList<Integer>[]  pathToBag;
     private ArrayList<Edge>[] adjedges;
     //static int cnt=0;
 
@@ -23,18 +24,20 @@ public class Emergency {
         distTo = new int[V];
         rescueTeams =new int[V];
         roads = new int[V];
+        roads[s] = 1;
         queue = new LinkedList<Integer>();
         Onqueue = new boolean[V];
         //pathTo 记录到这个点的路径上前一个点
-        pathTo = new int[V];
+       // pathTo = new int[V];
+//        for (int i = 0; i <V ; i++) {
+//            pathTo[i] = -1;
+//        }
+//        pathTo[s] = s;
+        //路径背包存放所有前继点
+        pathToBag = (ArrayList<Integer>[]) new ArrayList[V];
         for (int i = 0; i <V ; i++) {
-            pathTo[i] = -1;
+            pathToBag[i] = new ArrayList<Integer>(V);
         }
-        pathTo[s] = s;
-        for (int i = 0; i <V ; i++) {
-            roads[i] = 0;
-        }
-        roads[s] = 1;
         for (int i = 0; i <V ; i++) {
             distTo[i] = Integer.MAX_VALUE;
 
@@ -76,9 +79,6 @@ public class Emergency {
         int Edgeweight;
         int n1;
         int n2;
-       // boolean isRelax;
-
-
 
         Edge(int s,int t,int w){
             this.n1=s;
@@ -97,26 +97,43 @@ public class Emergency {
     public void relax(int v1,Edge e){
         if (distTo[e.theOther(v1)] > distTo[v1]+e.Edgeweight) {
             distTo[e.theOther(v1)] = distTo[v1]+e.Edgeweight;
-            pathTo[e.theOther(v1)] = v1;
-            if (Onqueue[e.theOther(v1)] == false) {
-                queue.offer(e.theOther(v1));
-                Onqueue[e.theOther(v1)] = true;
+        if (pathToBag[e.theOther(v1)].size()==0){
+            pathToBag[e.theOther(v1)].add(v1);
             }
-            roads[e.theOther(v1)] = roads [v1];
-            rescueTeams[e.theOther(v1)] = rescueTeams[v1]+vNodes[e.theOther(v1)].nodeWeight;
+        else{
+            pathToBag[e.theOther(v1)].clear();
+            pathToBag[e.theOther(v1)].add(v1);
+        }
+        if (Onqueue[e.theOther(v1)] == false) {
+            queue.offer(e.theOther(v1));
+            Onqueue[e.theOther(v1)] = true;
+        }
+        roads[e.theOther(v1)] = roads [v1];
+        rescueTeams[e.theOther(v1)] = rescueTeams[v1]+vNodes[e.theOther(v1)].nodeWeight;
         }
         else if (distTo[e.theOther(v1)] == distTo[v1]+e.Edgeweight){
             if (Onqueue[e.theOther(v1)] == false) {
                 queue.offer(e.theOther(v1));
                 Onqueue[e.theOther(v1)] = true;
             }
-            
-            rescueTeams[e.theOther(v1)] = Math.max(rescueTeams[v1]+vNodes[e.theOther(v1)].nodeWeight,rescueTeams[e.theOther(v1)]);
-            if (pathTo[e.theOther(v1)] == v1) {
-                roads[e.theOther(v1)] = roads[v1];
-            }else{
-                roads[e.theOther(v1)] += roads[v1];
+            if (!pathToBag[e.theOther(v1)].contains(v1)) {
+                pathToBag[e.theOther(v1)].add(v1);
             }
+
+            //pathTo[e.theOther(v1)] = v1;
+            rescueTeams[e.theOther(v1)] = Math.max(rescueTeams[v1]+vNodes[e.theOther(v1)].nodeWeight,rescueTeams[e.theOther(v1)]);
+            int cnt =0;
+            for (int i = 0; i <pathToBag[e.theOther(v1)].size() ; i++) {
+                cnt += roads[pathToBag[e.theOther(v1)].get(i)];
+            }
+            roads[e.theOther(v1)] =cnt;
+//            }else{
+////                roads[e.theOther(v1)] += roads[v1];
+////                pathTo[e.theOther(v1)] = v1;
+////                for (int i = 0; i <vNodes.length; i++) {
+////                    if (pathTo[i] == e.theOther(v1)) roads[i] +=  roads[v1];
+//                }
+
 
         }
 
