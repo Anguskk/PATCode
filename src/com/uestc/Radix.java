@@ -59,18 +59,36 @@ public class Radix {
         }
         // Radix 可能超过36
         else {
+            //二分查找
             //int highBound = Integer.max(Math.toIntExact(given),minRadix)+1;
             //i是进制的遍历  ,最大不超过given  (10)1*given=given
             long low=minRadix+1;
             long upperbound=given;
+//            if (upperbound >= 1000000000) {
+//                while (true){
+//                    long temp =radix_10_Sum(strings[2-tag],upperbound/10);
+//                    if ( temp>=given || temp<0) {
+//                        upperbound = upperbound/10;
+//                    }
+//                    else break;
+//
+//                }
+//            }
+
             long ans=-1;
             while (low<=upperbound){
                 long mid = (low+upperbound)/2;
-                if (radix_10_Sum(strings[2-tag],mid) >given) {
-                    upperbound= mid;
+                long temp=radix_10_Sum(strings[2-tag],mid);
+                if (temp<0){
+                    //溢出
+                     upperbound=mid-1;
+                     continue;
                 }
-                else if (radix_10_Sum(strings[2-tag],mid) < given) {
-                    low = mid;
+                if (temp >given) {
+                    upperbound= mid-1;
+                }
+                else if (temp < given) {
+                    low = mid+1;
                 }
                 else {
                     ans=mid;
