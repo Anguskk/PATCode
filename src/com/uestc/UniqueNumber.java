@@ -12,35 +12,26 @@ public class UniqueNumber {
     public static void main(String[] args) {
         Scanner scanner= new Scanner(System.in);
         int N;
+
         N =scanner.nextInt();
         int[] nums = new int[N];
-        for (int i = 0; i <N ; i++) {
+        nums[0] = scanner.nextInt();
+        isRepeat[nums[0]] +=1;
+       // int pointer = nums[0];
+        for (int i = 1; i <N ; i++) {
             nums[i] = scanner.nextInt();
-
-            if (!numSet.contains(nums[i]) && isRepeat[nums[i]] ==0 ) {
-                numSet.add(nums[i]);
-
-            } else {
-                numSet.remove(nums[i]);
-
-            }
-            isRepeat[nums[i]] +=1;
-        }
-        if (numSet.isEmpty()) {
-            System.out.print("None");
-            return;
-        }
-        else{
-
-            Iterator<Integer> unique = numSet.iterator();
-            System.out.print(unique.next());
-
-        }
-//        for (int i = 0; i <nums.length ; i++) {
-//            if (isRepeat[nums[i]] == true){
-//                System.out.print(nums[i]);
-//                return;
+           isRepeat[nums[i]] +=1;
+//            if (isRepeat[pointer] >1) {
+//
 //            }
-//        }
+        }
+
+        for (int i = 0; i <nums.length ; i++) {
+            if (isRepeat[nums[i]] == 1){
+                System.out.print(nums[i]);
+                return;
+            }
+        }
+        System.out.print("None");
     }
 }
