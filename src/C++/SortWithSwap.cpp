@@ -3,9 +3,8 @@
 using namespace  std;
 vector<int> pos;
 vector<int> q_pos;
-int main(int argc, char* argv[])
+int SortWithSwap(int argc, char* argv[])
 {	
-	int a[]={123,2,32,4,123,88};
 	int N;cin>>N;
 	pos.resize(N);
 	q_pos.resize(N);
